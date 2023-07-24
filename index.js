@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const bodyParser = require('body-parser');
 const { Client } = require('ssh2');
@@ -5,24 +6,25 @@ const { Client } = require('ssh2');
 const app = express();
 const conn = new Client();
 
+const HOST = process.env.SSH_HOST;
+const PORT = process.env.SSH_PORT;
+const USERNAME = process.env.SSH_USERNAME;
+const PASSWORD = process.env.SSH_PASSWORD;
+const PATH = process.env.REPOSITORY_PATH;
+
 app.use(bodyParser.json());
 
 app.post('/pull', (req, res) => {
-  const ssh = req.body.ssh;
-  const repositoryPath = req.body.path;
-  const branch = req.body.branch;
-  const repositoryName = req.body.repository;
-
-  console.log(`Recibido push en ${branch} para el proyecto ${repositoryName}`);
+  const repositoryName = req.body.name;
+  console.log(`Recibido push para el proyecto ${repositoryName}`);
   
-  if(branch.indexOf('master') > -1){
     conn.connect({
-        host: ssh.host,
-        port: ssh?.port ?? 22,
-        username: ssh.username,
-        password: ssh.password
+        host: HOST,
+        port: PORT ?? 22,
+        username: USERNAME,
+        password: PASSWORD
       });
-    const command = `cd ${repositoryPath}/${repositoryName} && git branch ${branch} && git pull`;
+    const command = `cd ${PATH}/${repositoryName} && sudo git pull`;
     conn.on('ready', function() {
         console.log('Client :: ready');
         conn.exec(command, function(err, stream) {
@@ -38,9 +40,6 @@ app.post('/pull', (req, res) => {
         });
       });
     return res.send(command);
-  }
-
-  return res.sendStatus(500);
 });
 
 app.listen(5000, () => {
