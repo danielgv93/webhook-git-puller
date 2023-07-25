@@ -15,6 +15,9 @@ const PATH = process.env.REPOSITORY_PATH;
 app.use(bodyParser.json());
 
 app.post('/pull', (req, res) => {
+  if (!req.body.repository) {
+    return res.send("Cannot pull from repository")
+  }
   const repositoryName = req.body.repository.name;
   console.log(`Recibido push para el proyecto ${repositoryName}`);
     conn.connect({
