@@ -17,7 +17,6 @@ app.use(bodyParser.json());
 app.post('/pull', (req, res) => {
   const repositoryName = req.body.repository.name;
   console.log(`Recibido push para el proyecto ${repositoryName}`);
-  console.log(req.body)
     conn.connect({
         host: HOST,
         port: PORT ?? 22,
