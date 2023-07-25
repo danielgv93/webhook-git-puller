@@ -28,7 +28,7 @@ app.post('/pull', (req, res) => {
         username: USERNAME,
         password: PASSWORD
       });
-    const command = `cd ${PATH}/${repositoryName} && sudo git pull`;
+    const command = `cd ${PATH}/${repositoryName} && sudo git pull && [ -f git.sh ] && sudo bash git.sh`;
     conn.on('ready', function() {
         console.log('Client :: ready');
         conn.exec(command, function(err, stream) {
