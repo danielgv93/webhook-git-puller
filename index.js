@@ -15,7 +15,7 @@ const PATH = process.env.REPOSITORY_PATH;
 app.use(bodyParser.json());
 
 app.post('/pull', (req, res) => {
-  const repositoryName = req.body.name;
+  const repositoryName = req.body.repository.name;
   console.log(`Recibido push para el proyecto ${repositoryName}`);
   console.log(req.body)
     conn.connect({
